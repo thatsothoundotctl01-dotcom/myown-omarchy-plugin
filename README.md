@@ -57,3 +57,4 @@ system before relying on it:
 `omarchy plugin validate` and `qmllint` will catch structural issues;
 `qs log -p "$OMARCHY_PATH/shell" --tail 100` will show runtime QML
 errors if the overlay doesn't render.
+#update readme add actions.json
