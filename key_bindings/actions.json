@@ -1,0 +1,9 @@
+[
+  { "label": "Lock screen", "command": "omarchy-lock-screen", "keywords": "lock screen power", "hint": "system" },
+  { "label": "Toggle wifi", "command": "nmcli radio wifi toggle", "keywords": "network wireless", "hint": "network" },
+  { "label": "Reload Hyprland config", "command": "hyprctl reload", "keywords": "hyprland refresh", "hint": "hyprland" },
+  { "label": "Restart Omarchy shell", "command": "omarchy-restart-shell", "keywords": "shell reload restart", "hint": "shell" },
+  { "label": "Open keybinds cheatsheet", "command": "omarchy-shell shell summon yourname.keybinds-cheatsheet '{}'", "keywords": "keys shortcuts help", "hint": "plugin" },
+  { "label": "Edit Hyprland config", "command": "$TERMINAL -e nvim ~/.config/hypr/hyprland.conf", "keywords": "edit config hyprland", "hint": "editor" },
+  { "label": "Screenshot region", "command": "omarchy-screenshot-region", "keywords": "screenshot capture", "hint": "media" }
+]
