@@ -1,80 +1,89 @@
-# Command Palette
+# myown-omarchy-plugin
 
-A summoned `menu`-kind Omarchy plugin: one key opens a fuzzy-searchable
-list of your own scripts, apps, and system actions. Adding a new action
-never requires touching QML — you just add a line to a JSON config file.
+Personal collection of [Omarchy](https://omarchy.org) Quattro shell plugins —
+built for full keyboard control, a fast command palette, and Khmer keyboard
+support in kh .
 
-## Install (development)
+Each plugin lives in its own folder with its own `manifest.json` and README.
+Enable only the ones you want.
+
+## Plugins
+
+| Folder | Kind | What it does |
+|---|---|---|
+| [`key_bindings/keybinds-cheatsheet`](key_bindings/keybinds-cheatsheet) | `overlay` | Fullscreen, searchable list of your **live** Hyprland keybindings (read via `hyprctl binds -j`) |
+| [`key_bindings/command-palette`](key_bindings/command-palette) | `menu` | Fuzzy-searchable list of your own scripts, apps, and system actions — add new actions by editing one JSON file, no QML |
+| [`kh_keyboard/khmer-layout-switcher`](kh_keyboard/khmer-layout-switcher) | `bar-widget` | Shows active keyboard layout (`EN`/`KH`) in the bar; click to toggle, right-click for a layouts panel |
+
+## Requirements
+
+- [Omarchy](https://omarchy.org) Quattro (the Quickshell-based shell rewrite)
+- For the Khmer layout switcher: Khmer enabled in your Hyprland `input {}`
+  config and Khmer-capable fonts installed — see that plugin's README for
+  the two-line setup.
+
+## Install a plugin
+
+Each plugin folder is self-contained. General pattern:
 
 ```sh
-mkdir -p ~/.config/omarchy/plugins/yourname.command-palette
-cp manifest.json Menu.qml README.md \
-   ~/.config/omarchy/plugins/yourname.command-palette/
+PLUGIN=command-palette   # or keybinds-cheatsheet / khmer-layout-switcher
+PLUGIN_ID=yourname.$PLUGIN
 
-omarchy plugin validate ~/.config/omarchy/plugins/yourname.command-palette
-qmllint -I "$OMARCHY_PATH/shell" \
-   ~/.config/omarchy/plugins/yourname.command-palette/Menu.qml
+mkdir -p ~/.config/omarchy/plugins/$PLUGIN_ID
+cp key_bindings/$PLUGIN/* ~/.config/omarchy/plugins/$PLUGIN_ID/   # adjust path per plugin
 
-omarchy plugin enable yourname.command-palette
+omarchy plugin validate ~/.config/omarchy/plugins/$PLUGIN_ID
+qmllint -I "$OMARCHY_PATH/shell" ~/.config/omarchy/plugins/$PLUGIN_ID/*.qml
+
+omarchy plugin enable $PLUGIN_ID
 omarchy-shell shell rescanPlugins
 ```
 
-## Configure your actions
-
-Copy the example config to where the plugin actually reads from:
+Or clone straight from this repo once it's public:
 
 ```sh
-mkdir -p ~/.config/omarchy/command-palette
-cp actions.example.json ~/.config/omarchy/command-palette/actions.json
+omarchy plugin add https://github.com/thatsothoundotctl01-dotcom/myown-omarchy-plugin.git --enable
 ```
 
-Then edit `~/.config/omarchy/command-palette/actions.json` — each entry:
+See each plugin's own `README.md` for exact commands, keybind suggestions,
+and configuration.
 
-```json
-{ "label": "Lock screen", "command": "omarchy-lock-screen", "keywords": "power", "hint": "system" }
-```
-
-- `label` — what's shown in the list
-- `command` — shell command run via `sh -c` when you select it
-- `keywords` — optional extra text matched by the search filter
-- `hint` — optional small right-aligned tag (category label)
-
-The plugin **watches the file** (`FileView.watchChanges`), so edits apply
-immediately — no restart needed.
-
-## Bind a key to open it
-
-Add to your Hyprland config:
+## Structure
 
 ```
-bind = SUPER, P, exec, omarchy-shell shell summon yourname.command-palette '{}'
+myown-omarchy-plugin/
+├── key_bindings/
+│   ├── keybinds-cheatsheet/   # overlay: live Hyprland keybind viewer
+│   │   ├── manifest.json
+│   │   ├── Overlay.qml
+│   │   └── README.md
+│   └── command-palette/       # menu: fuzzy action launcher
+│       ├── manifest.json
+│       ├── Menu.qml
+│       ├── actions.example.json
+│       └── README.md
+├── kh_keyboard/
+│   └── khmer-layout-switcher/ # bar-widget: EN/KH layout indicator
+│       ├── manifest.json
+│       ├── BarWidget.qml
+│       ├── Panel.qml
+│       └── README.md
+└── README.md                  # you are here
 ```
 
-Then inside the palette: type to filter, ↑/↓ to move, Enter to run,
-Escape to close.
+## Status
 
-## Remove
+⚠️ Work in progress. These plugins are built from Omarchy's documented
+plugin patterns and are validated with `omarchy plugin validate` /
+`qmllint`, but some QML base-component names are best-effort and should be
+cross-checked against the real built-in plugins at
+`$OMARCHY_PATH/shell/plugins/` before you fully rely on them. Each
+plugin's own README notes exactly what to verify.
 
-```sh
-omarchy plugin remove yourname.command-palette
-```
+## License
 
-## Notes / things to verify
+MIT — see [`LICENSE`](LICENSE). Plugins run **unsandboxed** with your user
+permissions; review the code before enabling anything, including your own. 
 
-Same caveat as the keybinds cheatsheet: I don't have the real source for
-`Menu`, `MenuKeyCatcher`, or `FileView` in `qs.Ui`/`qs.Commons`, so treat
-the base-component names and their signals (`onUpRequested`,
-`onEnterRequested`, etc.) as best-effort guesses modeled on the documented
-`Panel`/`PanelKeyCatcher` pattern. Before relying on this:
 
-1. Compare against the real `omarchy.menu` plugin source at
-   `$OMARCHY_PATH/shell/plugins/menu/Menu.qml` and copy its actual base
-   class and key-handling API.
-2. Confirm `Quickshell.execDetached` and `FileView` are the real APIs for
-   running commands / watching files in this Quickshell version — check
-   `$OMARCHY_PATH/shell/plugins/clipboard/Clipboard.qml` or
-   `reminders/ReminderFlow.qml`, which likely do similar things.
-
-`omarchy plugin validate`, `qmllint`, and
-`qs log -p "$OMARCHY_PATH/shell" --tail 100` are your fastest feedback
-loop for fixing whatever doesn't match.
