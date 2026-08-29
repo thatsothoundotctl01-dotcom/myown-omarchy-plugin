@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "id": "yourname.keybinds-cheatsheet",
+  "name": "Keybinds Cheatsheet",
+  "version": "1.0.0",
+  "author": "Your name",
+  "license": "MIT",
+  "description": "Fullscreen overlay listing your live Hyprland keyboard shortcuts, searchable by key or action.",
+  "kinds": ["overlay"],
+  "entryPoints": { "overlay": "Overlay.qml" }
+}
