@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "id": "ex.khmer-layout-switcher",
+  "name": "Khmer Layout Switcher",
+  "version": "1.0.0",
+  "author": "Your name",
+  "license": "MIT",
+  "description": "Bar widget showing the active keyboard layout (EN/KH). Click to toggle, right-click for details panel.",
+  "kinds": ["bar-widget"],
+  "entryPoints": { "barWidget": "BarWidget.qml" },
+  "barWidget": {
+    "displayName": "Khmer Layout Switcher",
+    "category": "Input",
+    "allowMultiple": false,
+    "defaultSection": "right"
+  }
+}
